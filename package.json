@@ -5,14 +5,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "preimport": "rimraf ./build && tsc src/*.ts --outDir build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "import": "npm run preimport && node build/index.js"
   },
   "dependencies": {
     "graphql": "^16.8.1",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "rimraf": "^5.0.5",
     "use-debounce": "^10.0.0",
     "weaviate-ts-client": "^2.0.0"
   },
