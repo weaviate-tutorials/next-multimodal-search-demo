@@ -13,6 +13,7 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "use-debounce": "^10.0.0",
     "weaviate-ts-client": "^2.0.0"
   },
   "devDependencies": {

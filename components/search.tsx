@@ -1,13 +1,14 @@
 'use client'
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation"
+import { useDebouncedCallback } from "use-debounce"
 
 export default function Search({ placeholder }: { placeholder: string }) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const { replace } = useRouter()
 
-    function handleSearch(term: string) {
+    const handleSearch = useDebouncedCallback((term: string) => {
         const params = new URLSearchParams(searchParams.toString())
         if (term) {
             params.set("search", term)
@@ -15,8 +16,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
             params.delete("search")
         }
         replace(pathname + "?" + params)
-        console.log(term)
-    }
+    }, 300);
     return (
         <div className="pt-20">
             <div className="relative">
