@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## This is a Multimodal Search demo built with [Weaviate](https://weaviate.io), [ImageBind](https://imagebind.metademolab.com/) and [Next.js](https://nextjs.org/) 
 
-## Getting Started
+👨🏾‍🍳 [Blogpost]() - coming soon
 
-First, run the development server:
+## 🐥 Getting Started
+
+First, clone the project with the command below
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/malgamves/next-multimodal-search-demo
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The repository lets do three things
+1. Run the Next.js Web App.
+2. Run an instance of Weaviate.
+3. Import images, audio and videos into your Weaviate database.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+### 🏗️ Running Weaviate  
+> Note that the first time you run it, Docker will download ~4.8GB multi2vec-bind Weaviate module, which contains the ImageBind model.
 
-To learn more about Next.js, take a look at the following resources:
+To start the Weaviate instance, run the following command, which will use the `docker-compose.yml` file.
+```bash
+docker compose up -d
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 📩 Importing Data
+> Before you can import data, add any files to thier respective media type in the `public/` folder. 
 
-## Deploy on Vercel
+With your data in the right folder, run `yarn install` to install all project dependancies and to import your data into Weaviate and initailise a collection, run:
+```bash
+yarn run import
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+this may take a minute or two.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+### 🚀 Running your Next.js Application.
+> Make sure you have your Weaviate instance running with data imported before starting your Next.js Web App.
+
+To run the Web App
+```bash
+yarn dev
+```
+
+... and you can search away!! 
+
+
+### 📚 Resources
+
+Learn more about multimodal applications
+- [Multimodal Retrieval Augmented Generation(RAG)](https://weaviate.io/blog/multimodal-rag)
+- [Multimodal Embedding Models](https://weaviate.io/blog/multimodal-models)
+
+
+### 🤷🏾‍♂️ Troubleshooting
+
+- Check out the [Weaviate Docs](https://weaviate.io/developers/weaviate)
+- [Open an Issue](https://github.com/malgamves/next-multimodal-search-demo/issues)
+
+
+
+
