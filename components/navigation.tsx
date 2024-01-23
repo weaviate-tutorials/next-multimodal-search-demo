@@ -18,7 +18,7 @@ export default function Navigation() {
         </Link>
         <div className="flex items-center space-x-4">
           <a
-            href="https://vercel.com/templates/next.js/spirals"
+            href="https://weaviate.io/developers/weaviate/modules/retriever-vectorizer-modules/multi2vec-bind#overview"
             target="_blank"
             rel="noopener noreferrer"
             className="group hidden max-w-fit items-center justify-center space-x-2 rounded-full border border-black bg-black px-3 py-1.5 text-sm text-white transition-colors hover:bg-white hover:text-black sm:flex"
@@ -26,21 +26,12 @@ export default function Navigation() {
             <p>read more in our docs</p>
           </a>
           <a
-            href="https://vercel.com/templates/next.js/spirals"
+            href="https://weaviate.io/developers/weaviate/modules/retriever-vectorizer-modules/multi2vec-bind#overview"
             target="_blank"
             rel="noopener noreferrer"
             className="sm:hidden"
           >
-            <svg
-              width="1155"
-              height="1000"
-              viewBox="0 0 1155 1000"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-            >
-              <path d="M577.344 0L1154.69 1000H0L577.344 0Z" fill="black" />
-            </svg>
+            <span> 📚 </span>
           </a>
           <a
             href="https://github.com/malgamves"

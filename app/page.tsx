@@ -13,6 +13,14 @@ const client: WeaviateClient = weaviate.client({
   host: 'localhost:8080',
 });
 
+interface BindMediaObject {
+  _additional: {
+    certainty: number;
+    id: string;
+  };
+  media: string;
+  name: string;
+}
 
 export default async function Home({
   searchParams
@@ -24,7 +32,6 @@ export default async function Home({
   const search = searchParams?.search || "";
   const data = await searchDB(search);
 
-
   return (
     <html lang="en">
       <body>
@@ -35,20 +42,17 @@ export default async function Home({
         <main className="flex min-h-screen w-full flex-col items-center justify-center py-32">
 
           <Search placeholder="Search for a word" />
-
           <div className="relative flex grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-8 p-20">
 
-            {data.map((result: WeaviateObject) => (
+            {data.map((result: BindMediaObject) => (
               <div key={result?._additional.id} className="">
 
                 <div className="h-40 w-50">
                   <p className=" w-16 h-6 mt-2 ml-2 block text-center whitespace-nowrap items-center justify-center rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
                     {result.media}
                   </p>
-
                   {result?.media == 'image' &&
                     <img
-
                       alt="Certainty: "
                       className='block object-cover w-full h-full rounded-lg'
                       src={
@@ -63,7 +67,6 @@ export default async function Home({
                     } className='block object-none w-full h-full rounded-lg'>
                       Your browser does not support the audio element.
                     </audio>
-
                   }
 
                   {result.media == 'video' &&
@@ -72,16 +75,15 @@ export default async function Home({
                     } className='block object-none w-full h-full rounded-lg'>
                       Your browser does not support the video element.
                     </video>
-
                   }
-
                 </div>
-
               </div>
             ))}
           </div>
         </main>
+
         <Footer />
+
       </body>
     </html>
   )
