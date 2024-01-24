@@ -1,6 +1,7 @@
 ## This is a Multimodal Search demo built with [Weaviate](https://weaviate.io), [ImageBind](https://imagebind.metademolab.com/) and [Next.js](https://nextjs.org/) 
 
-👨🏾‍🍳 [Blogpost]() - coming soon
+👨🏾‍🍳 Blogpost - [Building Multimodal AI in TypeScript
+](https://weaviate.io/blog/multimodal-search-in-typescript)
 
 ## 🐥 Getting Started
 
@@ -61,5 +62,5 @@ Learn more about multimodal applications
 - [Open an Issue](https://github.com/malgamves/next-multimodal-search-demo/issues)
 
 
-
+Some credit goes to Steven for his [Spirals template](https://github.com/steven-tey/spirals)
 
