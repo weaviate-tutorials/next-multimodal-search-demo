@@ -3,6 +3,8 @@
 👨🏾‍🍳 Blogpost - [Building Multimodal AI in TypeScript
 ](https://weaviate.io/blog/multimodal-search-in-typescript)
 
+![Alt text](multi-model-search.png)
+
 ## 🐥 Getting Started
 
 First, clone the project with the command below
