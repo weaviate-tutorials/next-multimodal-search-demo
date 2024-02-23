@@ -30,9 +30,9 @@ docker compose up -d
 
 
 ### 📩 Importing Data
-> Before you can import data, add any files to thier respective media type in the `public/` folder. 
+> Before you can import data, add any files to their respective media type in the `public/` folder. 
 
-With your data in the right folder, run `yarn install` to install all project dependancies and to import your data into Weaviate and initailise a collection, run:
+With your data in the right folder, run `yarn install` to install all project dependencies and to import your data into Weaviate and initialise a collection, run:
 ```bash
 yarn run import
 ```
