@@ -13,7 +13,7 @@ First, clone the project with the command below
 git clone https://github.com/malgamves/next-multimodal-search-demo
 ```
 
-The repository lets do three things
+The repository lets us do three things
 1. Run the Next.js Web App.
 2. Run an instance of Weaviate.
 3. Import images, audio and videos into your Weaviate database.
