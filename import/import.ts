@@ -1,145 +1,146 @@
-import { ObjectsBatcher, WeaviateClient, generateUuid5 } from 'weaviate-ts-client';
-import { getWeaviateClient } from './client';
-import { FileInfo, getBase64, listFiles } from './util';
+import { WeaviateClient, generateUuid5, type Collection } from 'weaviate-client';
+import { getWeaviateClient } from './client.ts';
+import { FileInfo, getBase64, listFiles } from './util.ts';
 
-
-
-// const sourceImages = 'source/input_images/';
-// const sourceAudio = 'source/audio/';
-// const sourceVideo = 'source/video/';
 const sourceBase = 'public';
 const sourceImages = sourceBase + '/image/'
 const sourceAudio = sourceBase + '/audio/';
 const sourceVideo = sourceBase + '/video/';
 
-const client: WeaviateClient = getWeaviateClient();
+const client: WeaviateClient = await getWeaviateClient();
+
 
 export const importMediaFiles = async (collectionName: string) => {
-    await insertImages(collectionName);
-    await insertAudio(collectionName);
-    await insertVideo(collectionName);
+
+    const bindCollection = client.collections.get(collectionName); // make universal 
+
+    await insertImages(bindCollection);
+    await insertAudio(bindCollection);
+    await insertVideo(bindCollection);
 }
 
-const insertImages = async (collectionName: string) => {
-    let batcher: ObjectsBatcher = client.batch.objectsBatcher();
-    let counter = 0;
-    const batchSize = 5;
+// const insertImages = async (collectionName: string) => {
+//     let batcher: ObjectsBatcher = client.batch.objectsBatcher();
+//     let counter = 0;
+//     const batchSize = 5;
+
+//     const files = listFiles(sourceImages);
+//     console.log(`Importing ${files.length} images.`)
+
+//     for (const file of files) {
+//         const item = {
+//             name: file.name,
+//             image: getBase64(file.path),
+//             media: 'image'
+//         };
+
+//         console.log(`Adding [${item.media}]: ${item.name}`);
+
+
+//         batcher = batcher.withObject({
+//             class: collectionName,
+//             properties: item,
+//             id: generateUuid5(file.name)
+//         });
+
+//         if (++counter == batchSize) {
+//             console.log(`Flushing ${counter} items.`)
+
+//             // flush the batch queue
+//             await batcher.do();
+
+//             // restart the batch queue
+//             counter = 0;
+//             batcher = client.batch.objectsBatcher();
+//         }
+//     }
+
+//     if (counter > 0) {
+//         console.log(`Flushing remaining ${counter} item(s).`)
+//         await batcher.do();
+//         // const res = await batcher.do();
+//         // console.log(res);
+//     }
+// }
+
+const insertImages = async (myCollection: Collection) => {
+
+    const batchSize = 20;
+    let dataObject = [];
+    // const imagesCollection = client.collections.get(collectionName);
 
     const files = listFiles(sourceImages);
-    console.log(`Importing ${files.length} images.`)
+    console.log(`Importing ${files.length} images.`);
 
     for (const file of files) {
+        console.log(`Adding ${file.name}`);
+
+        // const fileName = file.name.split('.')[0];
+
         const item = {
             name: file.name,
+            extension: file.name.split('.')[1],
             image: getBase64(file.path),
-            media: 'image'
+            media: 'image',
         };
-        
-        console.log(`Adding [${item.media}]: ${item.name}`);
 
-        batcher = batcher.withObject({
-            class: collectionName,
-            properties: item,
-            id: generateUuid5(file.name)
-        });
-
-        if (++counter == batchSize) {
-            console.log(`Flushing ${counter} items.`)
-
-            // flush the batch queue
-            await batcher.do();
-      
-            // restart the batch queue
-            counter = 0;
-            batcher = client.batch.objectsBatcher();
-        }
+        dataObject.push(item);
     }
 
-    if (counter > 0) {
-        console.log(`Flushing remaining ${counter} item(s).`)
-        await batcher.do();
-        // const res = await batcher.do();
-        // console.log(res);
-    }
+    await myCollection.data.insertMany(dataObject);
 }
 
+const insertAudio = async (myCollection: Collection) => {
 
-const insertAudio = async (collectionName: string) => {
-    let batcher: ObjectsBatcher = client.batch.objectsBatcher();
-    let counter = 0;
-    const batchSize = 3;
+    const batchSize = 20;
+    let dataObject = [];
+    // const imagesCollection = client.collections.get(collectionName); // make universal 
 
     const files = listFiles(sourceAudio);
-    console.log(`Importing ${files.length} audio files.`)
+    console.log(`Importing ${files.length} audios.`);
 
     for (const file of files) {
+        console.log(`Adding ${file.name}`);
+
+        // const fileName = file.name.split('.')[0];
+
         const item = {
             name: file.name,
-            audio: getBase64(file.path),
-            media: 'audio'
+            extension: file.name.split('.')[1],
+            image: getBase64(file.path),
+            media: 'audio',
         };
 
-        console.log(`Adding [${item.media}]: ${item.name}`);
-        
-        batcher = batcher.withObject({
-            class: collectionName,
-            properties: item,
-            id: generateUuid5(file.name)
-        });
-
-        if (++counter == batchSize) {
-            console.log(`Flushing ${counter} items.`)
-            // flush the batch queue
-            await batcher.do();
-      
-            // restart the batch queue
-            counter = 0;
-            batcher = client.batch.objectsBatcher();
-        }
+        dataObject.push(item);
     }
 
-    if (counter > 0) {
-        console.log(`Flushing remaining ${counter} item(s).`)
-        await batcher.do();
-    }
+    await myCollection.data.insertMany(dataObject);
 }
 
-const insertVideo = async (collectionName: string) => {
-    let batcher: ObjectsBatcher = client.batch.objectsBatcher();
-    let counter = 0;
-    const batchSize = 1;
+const insertVideo = async (myCollection: Collection) => {
+
+    const batchSize = 20;
+    let dataObject = [];
+    // const imagesCollection = client.collections.get(collectionName); // make universal 
 
     const files = listFiles(sourceVideo);
-    console.log(`Importing ${files.length} video files.`)
+    console.log(`Importing ${files.length} videos.`);
 
     for (const file of files) {
+        console.log(`Adding ${file.name}`);
+
+        // const fileName = file.name.split('.')[0];
+
         const item = {
             name: file.name,
-            video: getBase64(file.path),
-            media: 'video'
+            extension: file.name.split('.')[1],
+            image: getBase64(file.path),
+            media: 'video',
         };
 
-        console.log(`Adding [${item.media}]: ${item.name}`);
-        
-        batcher = batcher.withObject({
-            class: collectionName,
-            properties: item,
-            id: generateUuid5(file.name)
-        });
-
-        if (++counter == batchSize) {
-            console.log(`Flushing ${counter} items.`)
-            // flush the batch queue
-            await batcher.do();
-      
-            // restart the batch queue
-            counter = 0;
-            batcher = client.batch.objectsBatcher();
-        }
+        dataObject.push(item);
     }
 
-    if (counter > 0) {
-        console.log(`Flushing remaining ${counter} item(s).`)
-        await batcher.do();
-    }
+    await myCollection.data.insertMany(dataObject);
 }
+

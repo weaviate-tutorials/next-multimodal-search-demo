@@ -1,15 +1,12 @@
-import weaviate, { WeaviateClient } from 'weaviate-ts-client';
+import weaviate, { type WeaviateClient } from 'weaviate-client';
+import 'dotenv/config'
 
 let client: WeaviateClient;
 
-export const getWeaviateClient = () => {
+export const getWeaviateClient = async () => {
   if (!client) {
-    client = weaviate.client({
-      scheme: 'http',
-      host: 'localhost:8080',
-    });
+    client = await weaviate.connectToLocal()
   };
   
-  // client.misc.readyChecker().do().then(console.log)
   return client;
 }

@@ -1,23 +1,14 @@
 import Footer from '@/components/footer';
 import Search from '../components/search'
 import Link from 'next/link'
+import { vectorSearch } from '@/utils/action';
 
-import weaviate, {
-  WeaviateClient,
-  WeaviateObject,
-} from "weaviate-ts-client";
+import { WeaviateGenericObject, type WeaviateReturn } from 'weaviate-client';
+
 import Navigation from '@/components/navigation';
 
-const client: WeaviateClient = weaviate.client({
-  scheme: 'http',
-  host: 'localhost:8080',
-});
 
-interface BindMediaObject {
-  _additional: {
-    certainty: number;
-    id: string;
-  };
+type BindMediaObject = {
   media: string;
   name: string;
 }
@@ -30,7 +21,7 @@ export default async function Home({
   }
 }) {
   const search = searchParams?.search || "";
-  const data = await searchDB(search);
+  const data = await vectorSearch(search);
 
   return (
     <html lang="en">
@@ -44,34 +35,34 @@ export default async function Home({
           <Search placeholder="Search for a word" />
           <div className="relative flex grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-8 p-20">
 
-            {data.map((result: BindMediaObject) => (
-              <div key={result?._additional.id} className="">
+            {data.objects.map((result) => (
+              <div key={result.uuid} className="">
 
                 <div className="h-40 w-50">
                   <p className=" w-16 h-6 mt-2 ml-2 block text-center whitespace-nowrap items-center justify-center rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
-                    {result.media}
+                    { result.properties.name }
                   </p>
-                  {result?.media == 'image' &&
+                  {result?.properties.media == 'image' &&
                     <img
                       alt="Certainty: "
                       className='block object-cover w-full h-full rounded-lg'
                       src={
-                        '/' + result.media + '/' + result.name
+                        '/' + result.properties.media + '/' + result.properties.name
                       }
                     />
                   }
 
-                  {result?.media == 'audio' &&
+                  {result?.properties.media == 'audio' &&
                     <audio controls src={
-                      '/' + result.media + '/' + result.name
+                      '/' + result.properties.media + '/' + result.properties.name
                     } className='block object-none w-full h-full rounded-lg'>
                       Your browser does not support the audio element.
                     </audio>
                   }
 
-                  {result.media == 'video' &&
+                  {result.properties.media == 'video' &&
                     <video controls src={
-                      '/' + result.media + '/' + result.name
+                      '/' + result.properties.media + '/' + result.properties.name
                     } className='block object-none w-full h-full rounded-lg'>
                       Your browser does not support the video element.
                     </video>
@@ -89,16 +80,3 @@ export default async function Home({
   )
 }
 
-
-async function searchDB(search: string) {
-
-  const res = await client.graphql
-    .get()
-    .withClassName("BindExample")
-    .withFields("media name _additional{ certainty id }")
-    .withNearText({ concepts: [`${search}`] })
-    .withLimit(8)
-    .do();
-
-  return res.data.Get.BindExample;
-}

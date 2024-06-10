@@ -1,5 +1,5 @@
-import { createBindCollection, deleteCollection } from './collection';
-import { importMediaFiles } from './import';
+import { createBindCollection, deleteCollection } from './collection.ts';
+import { importMediaFiles } from './import.ts';
 
 const collectionName = 'BindExample';
 
