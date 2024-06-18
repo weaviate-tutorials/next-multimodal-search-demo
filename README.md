@@ -14,6 +14,7 @@ git clone https://github.com/weaviate-tutorials/next-multimodal-search-demo
 ```
 
 The repository lets you do three things
+
 1. Run the Next.js Web App.
 2. Run an instance of Weaviate OR create a Weaviate Sandbox
 3. Import images, audio and videos into your Weaviate database.
@@ -43,6 +44,7 @@ Create a Weaviate instance on Weaviate Cloud Services as described in [this guid
 > Before you can import data, add any files to their respective media type in the `public/` folder. 
 
 With your data in the right folder, run `yarn install` to install all project dependencies and to import your data into Weaviate and initialize a collection, run:
+
 ```bash
 yarn run import
 ```
