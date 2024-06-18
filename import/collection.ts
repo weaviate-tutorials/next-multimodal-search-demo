@@ -7,23 +7,23 @@ const collectionExists = async (name: string) => {
   return client.collections.exists(name);
 }
 
-export const createBindCollection = async (name: string) => {
-  if(await collectionExists(name)) {
+export const createCollection = async (name: string) => {
+  if (await collectionExists(name)) {
     console.log(`The collection [${name}] already exists. No need to create it.`);
     return;
   }
-  
+
   console.log(`Creating collection [${name}].`);
 
   const newCollection = await client.collections.create({
     name: name,
-    vectorizers: [weaviate.configure.vectorizer.multi2VecBind({
-      name: 'default',
+    vectorizers: weaviate.configure.vectorizer.multi2VecPalm({
+      projectId: 'semi-random-dev',
+      location: 'us-central1',
       imageFields: ['image'],
-      audioFields: ['audio'],
       videoFields: ['video'],
-      vectorIndexConfig: weaviate.configure.vectorIndex.hnsw()
-    })],
+    },
+    ),
     properties: [
       {
         name: 'name',
@@ -47,8 +47,8 @@ export const createBindCollection = async (name: string) => {
       }
     ],
   })
-  
-  
+
+
 
   console.log(JSON.stringify(newCollection, null, 2));
 }

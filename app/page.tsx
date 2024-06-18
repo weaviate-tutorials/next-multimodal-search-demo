@@ -1,17 +1,8 @@
-import Footer from '@/components/footer';
-import Search from '../components/search'
-import Link from 'next/link'
-import { vectorSearch } from '@/utils/action';
+import Footer from '@/components/footer.tsx';
+import Search from '../components/search.tsx'
+import { vectorSearch } from '@/utils/action.ts';
 
-import { WeaviateGenericObject, type WeaviateReturn } from 'weaviate-client';
-
-import Navigation from '@/components/navigation';
-
-
-type BindMediaObject = {
-  media: string;
-  name: string;
-}
+import Navigation from '@/components/navigation.tsx';
 
 export default async function Home({
   searchParams
@@ -20,7 +11,7 @@ export default async function Home({
     search?: string;
   }
 }) {
-  const search = searchParams?.search || "";
+  const search = searchParams?.search || "people";
   const data = await vectorSearch(search);
 
   return (
@@ -39,9 +30,14 @@ export default async function Home({
               <div key={result.uuid} className="">
 
                 <div className="h-40 w-50">
-                  <p className=" w-16 h-6 mt-2 ml-2 block text-center whitespace-nowrap items-center justify-center rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
-                    { result.properties.name }
+                  <div className="flex justify-between">
+                  <p className="w-16 h-6 mt-2 ml-2 block text-center whitespace-nowrap items-center justify-center rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
+                    { result.properties.media }
                   </p>
+                  <p className="w-24 h-6 mt-2 mr-2 block text-center whitespace-nowrap items-center justify-end rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
+                    dist: { result.metadata?.distance?.toString().slice(0,6) }
+                  </p>
+                  </div>
                   {result?.properties.media == 'image' &&
                     <img
                       alt="Certainty: "

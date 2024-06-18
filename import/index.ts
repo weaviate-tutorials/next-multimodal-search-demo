@@ -1,11 +1,11 @@
-import { createBindCollection, deleteCollection } from './collection.ts';
+import { createCollection, deleteCollection } from './collection.ts';
 import { importMediaFiles } from './import.ts';
 
-const collectionName = 'BindExample';
+const collectionName = 'PalmMultimodalSearch';
 
 const run = async () => {
   await deleteCollection(collectionName);
-  await createBindCollection(collectionName);
+  await createCollection(collectionName);
   await importMediaFiles(collectionName);
 }
 

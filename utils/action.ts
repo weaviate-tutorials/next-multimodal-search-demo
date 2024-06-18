@@ -1,24 +1,24 @@
 "use server";
 
 import weaviate from "weaviate-client";
-// import { TrackType } from "../types.ts";
 
 
 export async function vectorSearch(searchTerm: string) {
-  const client = await weaviate.connectToWeaviateCloud(process.env.WCS_URL!!, {
-    authCredentials: new weaviate.ApiKey(process.env.WCS_API_KEY!!),
+  const client = await weaviate.connectToWeaviateCloud(process.env.WEAVIATE_HOST_URL || '',{
+    authCredentials: new weaviate.ApiKey(process.env.WEAVIATE_API_KEY || ''),
     headers: {
-      "X-OpenAI-Api-Key": process.env.OPENAI_APIKEY!!,
-    },
-  });
+      'X-Palm-Api-Key': process.env.GOOGLE_KEY || ''
+    }
+  },
+);
     
-    const myCollection = client.collections.get('BindExample')
-
+    const myCollection = client.collections.get('PalmMultimodalSearch')
+    
     const response = await myCollection.query.nearText(searchTerm,{
-        limit: 8
+        limit: 20,
+        returnMetadata: ['certainty', 'distance']
     })
 
-    console.log('yoooo',response)
     return response
   }
 

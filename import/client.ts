@@ -5,8 +5,14 @@ let client: WeaviateClient;
 
 export const getWeaviateClient = async () => {
   if (!client) {
-    client = await weaviate.connectToLocal()
+    client = await weaviate.connectToWeaviateCloud(process.env.WEAVIATE_HOST_URL || '',{
+        authCredentials: new weaviate.ApiKey(process.env.WEAVIATE_API_KEY || ''),
+        headers: {
+          'X-Palm-Api-Key': process.env.GOOGLE_KEY || ''
+        }
+      },
+    )
   };
-  
+
   return client;
 }

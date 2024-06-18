@@ -1,10 +1,10 @@
 import { WeaviateClient, generateUuid5, type Collection } from 'weaviate-client';
 import { getWeaviateClient } from './client.ts';
-import { FileInfo, getBase64, listFiles } from './util.ts';
+import { getBase64, listFiles } from './util.ts';
 
 const sourceBase = 'public';
-const sourceImages = sourceBase + '/image/'
-const sourceAudio = sourceBase + '/audio/';
+const sourceImages = sourceBase + '/image/';
+const sourceAudio = sourceBase + '/audio/'; // for Audio 
 const sourceVideo = sourceBase + '/video/';
 
 const client: WeaviateClient = await getWeaviateClient();
@@ -12,71 +12,26 @@ const client: WeaviateClient = await getWeaviateClient();
 
 export const importMediaFiles = async (collectionName: string) => {
 
-    const bindCollection = client.collections.get(collectionName); // make universal 
+    const vertexCollection = client.collections.get(collectionName); 
 
-    await insertImages(bindCollection);
-    await insertAudio(bindCollection);
-    await insertVideo(bindCollection);
+    await insertImages(vertexCollection);
+    // await insertAudio(vertexCollection);  # Uncomment to import Audio
+    await insertVideo(vertexCollection);
 }
-
-// const insertImages = async (collectionName: string) => {
-//     let batcher: ObjectsBatcher = client.batch.objectsBatcher();
-//     let counter = 0;
-//     const batchSize = 5;
-
-//     const files = listFiles(sourceImages);
-//     console.log(`Importing ${files.length} images.`)
-
-//     for (const file of files) {
-//         const item = {
-//             name: file.name,
-//             image: getBase64(file.path),
-//             media: 'image'
-//         };
-
-//         console.log(`Adding [${item.media}]: ${item.name}`);
-
-
-//         batcher = batcher.withObject({
-//             class: collectionName,
-//             properties: item,
-//             id: generateUuid5(file.name)
-//         });
-
-//         if (++counter == batchSize) {
-//             console.log(`Flushing ${counter} items.`)
-
-//             // flush the batch queue
-//             await batcher.do();
-
-//             // restart the batch queue
-//             counter = 0;
-//             batcher = client.batch.objectsBatcher();
-//         }
-//     }
-
-//     if (counter > 0) {
-//         console.log(`Flushing remaining ${counter} item(s).`)
-//         await batcher.do();
-//         // const res = await batcher.do();
-//         // console.log(res);
-//     }
-// }
 
 const insertImages = async (myCollection: Collection) => {
 
-    const batchSize = 20;
+    const batchSize = 10;
     let dataObject = [];
-    // const imagesCollection = client.collections.get(collectionName);
 
     const files = listFiles(sourceImages);
     console.log(`Importing ${files.length} images.`);
 
-    for (const file of files) {
+    let counter = 0
+
+    for (let file of files) {
         console.log(`Adding ${file.name}`);
-
-        // const fileName = file.name.split('.')[0];
-
+        
         const item = {
             name: file.name,
             extension: file.name.split('.')[1],
@@ -85,62 +40,72 @@ const insertImages = async (myCollection: Collection) => {
         };
 
         dataObject.push(item);
+        counter++
+
+        if (counter % batchSize == 0) {
+            await myCollection.data.insertMany(dataObject);
+
+            dataObject = []
+        }
     }
 
-    await myCollection.data.insertMany(dataObject);
+    if (counter % batchSize !== 0)
+        await myCollection.data.insertMany(dataObject);
 }
+// Uncomment if you are using a model with an audio encoder
+// const insertAudio = async (myCollection: Collection) => {
 
-const insertAudio = async (myCollection: Collection) => {
+//     const batchSize = 5;
+//     let dataObject = [];
 
-    const batchSize = 20;
-    let dataObject = [];
-    // const imagesCollection = client.collections.get(collectionName); // make universal 
+//     const files = listFiles(sourceAudio);
+//     console.log(`Importing ${files.length} audios.`);
 
-    const files = listFiles(sourceAudio);
-    console.log(`Importing ${files.length} audios.`);
+//     let counter = 0;
+//     for (let file of files) {
+//         console.log(`Adding ${file.name}`);
 
-    for (const file of files) {
-        console.log(`Adding ${file.name}`);
+//         const item = {
+//             name: file.name,
+//             extension: file.name.split('.')[1],
+//             audio: getBase64(file.path),
+//             media: 'audio',
+//         };
 
-        // const fileName = file.name.split('.')[0];
+//         dataObject.push(item);
+//         counter++;
 
-        const item = {
-            name: file.name,
-            extension: file.name.split('.')[1],
-            image: getBase64(file.path),
-            media: 'audio',
-        };
+//         if (counter % batchSize == 0) {
+//             await myCollection.data.insertMany(dataObject);
+//             // Clear the dataObject array
+//             dataObject = [];
+//         }
+//     }
 
-        dataObject.push(item);
-    }
-
-    await myCollection.data.insertMany(dataObject);
-}
+//     if (counter % batchSize !== 0)
+//         await myCollection.data.insertMany(dataObject);
+// }
 
 const insertVideo = async (myCollection: Collection) => {
 
-    const batchSize = 20;
-    let dataObject = [];
-    // const imagesCollection = client.collections.get(collectionName); // make universal 
+    const batchSize = 1;
 
     const files = listFiles(sourceVideo);
     console.log(`Importing ${files.length} videos.`);
 
-    for (const file of files) {
-        console.log(`Adding ${file.name}`);
+    console.log('meta', await myCollection.config.get())
 
-        // const fileName = file.name.split('.')[0];
+    for (let file of files) {
+        console.log(`Adding ${file.name}`);
 
         const item = {
             name: file.name,
             extension: file.name.split('.')[1],
-            image: getBase64(file.path),
+            video: getBase64(file.path),
             media: 'video',
         };
 
-        dataObject.push(item);
+        await myCollection.data.insert(item)
     }
-
-    await myCollection.data.insertMany(dataObject);
 }
 

@@ -13,7 +13,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "graphql": "^16.8.1",
-    "next": "14.0.4",
+    "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
     "rimraf": "^5.0.5",
