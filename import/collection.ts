@@ -1,76 +1,61 @@
-import { WeaviateClient } from 'weaviate-ts-client';
-import { getWeaviateClient } from './client';
+import weaviate, { type WeaviateClient } from 'weaviate-client';
+import { getWeaviateClient } from './client.ts';
 
-const client: WeaviateClient = getWeaviateClient();
+const client: WeaviateClient = await getWeaviateClient();
 
 const collectionExists = async (name: string) => {
-  return client.schema.exists(name);
+  return client.collections.exists(name);
 }
 
-export const createBindCollection = async (name: string) => {
-  if(await collectionExists(name)) {
+export const createCollection = async (name: string) => {
+  if (await collectionExists(name)) {
     console.log(`The collection [${name}] already exists. No need to create it.`);
     return;
   }
-  
+
   console.log(`Creating collection [${name}].`);
 
-  const bindSchema = {
-    class: name,
-    moduleConfig: {
-      'multi2vec-bind': {
-        // textFields: ['name'],
-        imageFields: ['image'],
-        audioFields: ['audio'],
-        videoFields: ['video'],
-      }
+  const newCollection = await client.collections.create({
+    name: name,
+    vectorizers: weaviate.configure.vectorizer.multi2VecPalm({
+      projectId: 'semi-random-dev',
+      location: 'us-central1',
+      imageFields: ['image'],
+      videoFields: ['video'],
     },
+    ),
     properties: [
       {
         name: 'name',
-        dataType: ['text'],
-        moduleConfig: {
-          'multi2vec-bind': { skip: true },
-        },
+        dataType: 'text',
       },
       {
         name: 'media',
-        dataType: ['text'],
-        moduleConfig: {
-          'multi2vec-bind': { skip: true },
-        },
+        dataType: 'text',
       },
       {
         name: 'image',
-        dataType: ['blob'],
+        dataType: 'blob',
       },
       {
         name: 'audio',
-        dataType: ['blob'],
+        dataType: 'blob',
       },
       {
         name: 'video',
-        dataType: ['blob'],
+        dataType: 'blob',
       }
     ],
-    vectorIndexType: 'hnsw',
-    vectorizer: 'multi2vec-bind'
-  }
-  
-  const res = await client
-    .schema.classCreator()
-    .withClass(bindSchema)
-    .do();
+  })
 
-  console.log(JSON.stringify(res, null, 2));
+
+
+  console.log(JSON.stringify(newCollection, null, 2));
 }
 
 export const deleteCollection = async (name: string) => {
   console.log(`Deleting collection ${name}...`);
-  await client.schema
-  .classDeleter()
-  .withClassName(name)
-  .do();
+  await client.collections.delete(name);
 
   console.log(`Deleted collection ${name}.`);
 }

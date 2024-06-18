@@ -1,15 +1,18 @@
-import weaviate, { WeaviateClient } from 'weaviate-ts-client';
+import weaviate, { type WeaviateClient } from 'weaviate-client';
+import 'dotenv/config'
 
 let client: WeaviateClient;
 
-export const getWeaviateClient = () => {
+export const getWeaviateClient = async () => {
   if (!client) {
-    client = weaviate.client({
-      scheme: 'http',
-      host: 'localhost:8080',
-    });
+    client = await weaviate.connectToWeaviateCloud(process.env.WEAVIATE_HOST_URL || '',{
+        authCredentials: new weaviate.ApiKey(process.env.WEAVIATE_API_KEY || ''),
+        headers: {
+          'X-Palm-Api-Key': process.env.GOOGLE_KEY || ''
+        }
+      },
+    )
   };
-  
-  // client.misc.readyChecker().do().then(console.log)
+
   return client;
 }

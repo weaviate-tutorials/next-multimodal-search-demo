@@ -14,7 +14,6 @@ export default function Search(
     const handleSearch = useDebouncedCallback((term: string) => {
         const params = new URLSearchParams(searchParams.toString())
         if (term) {
-            // setSearchTerm(term)
             params.set("search", term)
         } else {
             params.delete("search")
@@ -31,7 +30,6 @@ export default function Search(
                     placeholder={placeholder}
                     onChange={(e) => handleSearch(e.target.value)}
                     defaultValue={searchParams.get("search")?.toString()}
-                    // value={searchTerm}
                     className="w-[400px] h-12 rounded-md bg-gray-200 p-2 shadow-sm sm:text-sm"
                 />
             </div>

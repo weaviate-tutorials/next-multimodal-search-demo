@@ -2,22 +2,24 @@
   "name": "mumose",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3003",
     "build": "next build",
-    "preimport": "rimraf ./build && tsc import/*.ts --outDir build",
     "start": "next start",
     "lint": "next lint",
-    "import": "npm run preimport && node build/index.js"
+    "import": "tsx import/index.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "graphql": "^16.8.1",
-    "next": "14.0.4",
+    "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
     "rimraf": "^5.0.5",
+    "tsx": "^4.15.1",
     "use-debounce": "^10.0.0",
-    "weaviate-ts-client": "^2.0.0"
+    "weaviate-client": "^3.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",

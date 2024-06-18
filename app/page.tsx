@@ -1,26 +1,8 @@
-import Footer from '@/components/footer';
-import Search from '../components/search'
-import Link from 'next/link'
+import Footer from '@/components/footer.tsx';
+import Search from '../components/search.tsx'
+import { vectorSearch } from '@/utils/action.ts';
 
-import weaviate, {
-  WeaviateClient,
-  WeaviateObject,
-} from "weaviate-ts-client";
-import Navigation from '@/components/navigation';
-
-const client: WeaviateClient = weaviate.client({
-  scheme: 'http',
-  host: 'localhost:8080',
-});
-
-interface BindMediaObject {
-  _additional: {
-    certainty: number;
-    id: string;
-  };
-  media: string;
-  name: string;
-}
+import Navigation from '@/components/navigation.tsx';
 
 export default async function Home({
   searchParams
@@ -29,8 +11,8 @@ export default async function Home({
     search?: string;
   }
 }) {
-  const search = searchParams?.search || "";
-  const data = await searchDB(search);
+  const search = searchParams?.search || "people";
+  const data = await vectorSearch(search);
 
   return (
     <html lang="en">
@@ -44,34 +26,39 @@ export default async function Home({
           <Search placeholder="Search for a word" />
           <div className="relative flex grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-8 p-20">
 
-            {data.map((result: BindMediaObject) => (
-              <div key={result?._additional.id} className="">
+            {data.objects.map((result) => (
+              <div key={result.uuid} className="">
 
                 <div className="h-40 w-50">
-                  <p className=" w-16 h-6 mt-2 ml-2 block text-center whitespace-nowrap items-center justify-center rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
-                    {result.media}
+                  <div className="flex justify-between">
+                  <p className="w-16 h-6 mt-2 ml-2 block text-center whitespace-nowrap items-center justify-center rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
+                    { result.properties.media }
                   </p>
-                  {result?.media == 'image' &&
+                  <p className="w-24 h-6 mt-2 mr-2 block text-center whitespace-nowrap items-center justify-end rounded-lg translate-y-8 transform  bg-white px-2.5 py-0.5 text-sm text-black">
+                    dist: { result.metadata?.distance?.toString().slice(0,6) }
+                  </p>
+                  </div>
+                  {result?.properties.media == 'image' &&
                     <img
                       alt="Certainty: "
                       className='block object-cover w-full h-full rounded-lg'
                       src={
-                        '/' + result.media + '/' + result.name
+                        '/' + result.properties.media + '/' + result.properties.name
                       }
                     />
                   }
 
-                  {result?.media == 'audio' &&
+                  {result?.properties.media == 'audio' &&
                     <audio controls src={
-                      '/' + result.media + '/' + result.name
+                      '/' + result.properties.media + '/' + result.properties.name
                     } className='block object-none w-full h-full rounded-lg'>
                       Your browser does not support the audio element.
                     </audio>
                   }
 
-                  {result.media == 'video' &&
+                  {result.properties.media == 'video' &&
                     <video controls src={
-                      '/' + result.media + '/' + result.name
+                      '/' + result.properties.media + '/' + result.properties.name
                     } className='block object-none w-full h-full rounded-lg'>
                       Your browser does not support the video element.
                     </video>
@@ -89,16 +76,3 @@ export default async function Home({
   )
 }
 
-
-async function searchDB(search: string) {
-
-  const res = await client.graphql
-    .get()
-    .withClassName("BindExample")
-    .withFields("media name _additional{ certainty id }")
-    .withNearText({ concepts: [`${search}`] })
-    .withLimit(8)
-    .do();
-
-  return res.data.Get.BindExample;
-}
