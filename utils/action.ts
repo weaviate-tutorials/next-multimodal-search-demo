@@ -12,13 +12,15 @@ export async function vectorSearch(searchTerm: string) {
   },
 );
     
-    const myCollection = client.collections.get('PalmMultimodalSearch')
-    
-    const response = await myCollection.query.nearText(searchTerm,{
-        limit: 20,
-        returnMetadata: ['certainty', 'distance']
-    })
+const myCollection = client.collections.get('PalmMultimodalSearch');
 
-    return response
+
+const response = await myCollection.query.nearText(searchTerm, {
+limit: 8,
+returnMetadata: ['distance'],
+})
+
+return response
+   
   }
 

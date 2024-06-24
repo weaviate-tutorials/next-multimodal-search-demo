@@ -22,6 +22,7 @@
 /public/audio
 /public/image
 /public/video
+.vscode/
 
 
 # debug
