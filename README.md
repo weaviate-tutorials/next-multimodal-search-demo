@@ -35,8 +35,8 @@ Create a Weaviate instance on Weaviate Cloud Services as described in [this guid
 
 ### 🦿 Create a `.env` file and add the following keys
 
-- your Google Vertex API key as `GOOGLE_KEY` (you can get this in your [Vertex AI settings](https://console.cloud.google.com/apis/credentials))
-- your Weaviate API key as `WEAVIATE_API_KEY` (you can get this in your [Weaviate dashboard](https://console.weaviate.cloud/dashboard) under sandbox details)
+- your Google Vertex API key as `GOOGLE_API_KEY` (you can get this in your [Vertex AI settings](https://console.cloud.google.com/apis/credentials))
+- your Weaviate API key as `WEAVIATE_ADMIN_KEY` (you can get this in your [Weaviate dashboard](https://console.weaviate.cloud/dashboard) under sandbox details)
 - your Weaviate host URL as `WEAVIATE_HOST_URL` (you can get this in your [Weaviate dashboard](https://console.weaviate.cloud/dashboard) under sandbox details)
 
 

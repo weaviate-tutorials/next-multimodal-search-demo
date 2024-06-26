@@ -5,9 +5,9 @@ import weaviate from "weaviate-client";
 
 export async function vectorSearch(searchTerm: string) {
   const client = await weaviate.connectToWeaviateCloud(process.env.WEAVIATE_HOST_URL || '',{
-    authCredentials: new weaviate.ApiKey(process.env.WEAVIATE_API_KEY || ''),
+    authCredentials: new weaviate.ApiKey(process.env.WEAVIATE_ADMIN_KEY || ''),
     headers: {
-      'X-Palm-Api-Key': process.env.GOOGLE_KEY || ''
+      'X-Palm-Api-Key': process.env.GOOGLE_API_KEY || ''
     }
   },
 );
