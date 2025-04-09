@@ -12,7 +12,7 @@ export async function vectorSearch(searchTerm: string) {
   },
 );
     
-const myCollection = client.collections.get('PalmMultimodalSearch');
+const myCollection = client.collections.use('PalmMultimodalSearch');
 
 
 const response = await myCollection.query.nearText(searchTerm, {
