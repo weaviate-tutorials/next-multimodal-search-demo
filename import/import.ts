@@ -12,7 +12,7 @@ const client: WeaviateClient = await getWeaviateClient();
 
 export const importMediaFiles = async (collectionName: string) => {
 
-    const vertexCollection = client.collections.get(collectionName); 
+    const vertexCollection = client.collections.use(collectionName); 
 
     await insertImages(vertexCollection);
     // await insertAudio(vertexCollection);  # Uncomment to import Audio
